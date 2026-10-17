@@ -1,14 +1,15 @@
 
 /*
  * Name: Dennis Franks Jr.
- * Date: October 10, 2026
- * Assignment: SDC330L Week 1 - Employee Management
- * Description: HourlyEmployee class that inherits from
- * Employee and stores hourly pay and hours worked.
- * Demonstrates inheritance and method overriding.
+ * Date: October 17, 2026
+ * Assignment: SDC330L Week 2 Project
+ * Description: HourlyEmployee inherits from Employee
+ * and implements the Payable interface.
  */
 
-public class HourlyEmployee extends Employee {
+// Demonstrates inheritance and interface implementation.
+public class HourlyEmployee extends Employee implements Payable {
+
     private double hourlyRate;
     private double hoursWorked;
 
@@ -20,7 +21,6 @@ public class HourlyEmployee extends Employee {
         this.hoursWorked = hoursWorked;
     }
 
-    // Getters and setters
     public double getHourlyRate() {
         return hourlyRate;
     }
@@ -37,7 +37,8 @@ public class HourlyEmployee extends Employee {
         this.hoursWorked = hoursWorked;
     }
 
-    // Calculate employee's earnings
+    // Implements the method defined in Payable.
+    @Override
     public double calculatePay() {
         return hourlyRate * hoursWorked;
     }
