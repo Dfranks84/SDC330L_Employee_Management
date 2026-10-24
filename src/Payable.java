@@ -1,13 +1,13 @@
 
 /*
  * Name: Dennis Franks Jr.
- * Date: October 17, 2026
- * Assignment: SDC330L Week 2 Project
- * Description: Interface that defines a method
+ * Date: October 24, 2026
+ * Assignment: SDC330L Week 3 Project
+ * Description: Interface defining the contract
  * for calculating employee pay.
  */
 
-// Demonstrates creation of an interface.
+// Interface: Implementing classes must calculate employee pay.
 public interface Payable {
 
     double calculatePay();

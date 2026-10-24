@@ -1,11 +1,11 @@
 
 /*
  * Name: Dennis Franks Jr.
- * Date: October 17, 2026
- * Assignment: SDC330L Week 2 Project
- * Description: Main application demonstrating user
- * interaction, inheritance, composition, interfaces,
- * and polymorphism in Employee Management.
+ * Date: October 24, 2026
+ * Assignment: SDC330L Week 3 Project
+ * Description: Main application demonstrating abstraction,
+ * constructors, access specifiers, inheritance,
+ * composition, interfaces, and polymorphism.
  */
 
 import java.util.Scanner;
@@ -17,8 +17,8 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         System.out.println("======================================");
-        System.out.println("SDC330L - WEEK 2 PROJECT");
-        System.out.println("Software Design: Interfaces & Polymorphism");
+        System.out.println("SDC330L - WEEK 3 PROJECT");
+        System.out.println("Abstraction, Constructors, & Access Specifiers");
         System.out.println("Employee Management Application");
         System.out.println("Created by: Dennis Franks Jr.");
         System.out.println("======================================");
@@ -27,27 +27,39 @@ public class Main {
         System.out.println("This program displays employee and department information.");
         System.out.println("Select an option from the menu below.");
 
+        // Demonstrates a parameterized constructor.
         Department department = new Department(
                 101, "Information Technology");
 
+        // Demonstrates inherited constructors and initialization.
         HourlyEmployee employee1 = new HourlyEmployee(
                 1001, "Dennis", "Franks Jr.", 25.00, 40.0);
 
         HourlyEmployee employee2 = new HourlyEmployee(
                 1002, "John", "Smith", 20.00, 35.0);
 
-        // Demonstrates composition:
-        // Employees contain a Department object.
+        // Demonstrates an overloaded constructor.
+        HourlyEmployee employee3 = new HourlyEmployee(
+                1003, "Jane", "Doe");
+
+        // Access specifiers: Public setter methods provide
+        // controlled access to private employee fields.
+        employee3.setHourlyRate(22.00);
+        employee3.setHoursWorked(30.0);
+
+        // Composition: Employees contain a Department object.
         employee1.setDepartment(department);
         employee2.setDepartment(department);
+        employee3.setDepartment(department);
 
-        // Demonstrates polymorphism:
-        // Employee references point to HourlyEmployee objects.
-        Employee[] employees = {employee1, employee2};
+        // Abstraction and polymorphism:
+        // Employee is abstract, so objects are created from
+        // HourlyEmployee and referenced through Employee.
+        Employee[] employees = {employee1, employee2, employee3};
 
-        // Demonstrates interface polymorphism:
-        // Payable references point to HourlyEmployee objects.
-        Payable[] payableEmployees = {employee1, employee2};
+        // Interface polymorphism:
+        // Payable references can call calculatePay().
+        Payable[] payableEmployees = {employee1, employee2, employee3};
 
         int choice = 0;
 
@@ -71,8 +83,7 @@ public class Main {
                 case 1:
                     System.out.println("\n***** Employee Information *****");
 
-                    // Polymorphism calls the overridden toString()
-                    // method for each HourlyEmployee object.
+                    // Polymorphism calls the subclass toString().
                     for (Employee employee : employees) {
                         System.out.println(employee);
                         System.out.println();
@@ -87,8 +98,7 @@ public class Main {
                 case 3:
                     System.out.println("\n***** Employee Pay *****");
 
-                    // Interface polymorphism uses Payable
-                    // to calculate pay for each employee.
+                    // Interface references calculate each employee's pay.
                     for (int i = 0; i < payableEmployees.length; i++) {
                         System.out.println("Employee ID: "
                                 + employees[i].getEmployeeId());

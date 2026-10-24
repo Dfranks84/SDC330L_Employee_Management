@@ -1,19 +1,27 @@
 
 /*
  * Name: Dennis Franks Jr.
- * Date: October 10, 2026
- * Assignment: SDC330L Week 1 - Employee Management
- * Description: Department class that stores department
- * information and supports composition with Employee.
+ * Date: October 24, 2026
+ * Assignment: SDC330L Week 3 Project
+ * Description: Department class demonstrating constructors,
+ * access specifiers, encapsulation, and composition.
  */
 
 public class Department {
+
+    // Private fields demonstrate encapsulation.
     private int departmentId;
     private String departmentName;
 
+    // Parameterized constructor initializes department information.
     public Department(int departmentId, String departmentName) {
         this.departmentId = departmentId;
         this.departmentName = departmentName;
+    }
+
+    // No-argument constructor provides default values.
+    public Department() {
+        this(0, "Unassigned");
     }
 
     public int getDepartmentId() {
