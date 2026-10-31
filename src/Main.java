@@ -1,12 +1,14 @@
 
-/*
+/************************************************************
  * Name: Dennis Franks Jr.
- * Date: October 24, 2026
- * Assignment: SDC330L Week 3 Project
- * Description: Main application demonstrating abstraction,
- * constructors, access specifiers, inheritance,
- * composition, interfaces, and polymorphism.
- */
+ * Date: October 31, 2026
+ * Assignment: SDC330L Week 4 Project
+ * Database Interactions
+ *
+ * Description: Employee Management Application using
+ * abstraction, inheritance, composition, constructors,
+ * interfaces, polymorphism, and SQLite database operations.
+ ************************************************************/
 
 import java.util.Scanner;
 
@@ -17,21 +19,25 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         System.out.println("======================================");
-        System.out.println("SDC330L - WEEK 3 PROJECT");
-        System.out.println("Abstraction, Constructors, & Access Specifiers");
+        System.out.println("SDC330L - WEEK 4 PROJECT");
+        System.out.println("Database Interactions");
         System.out.println("Employee Management Application");
         System.out.println("Created by: Dennis Franks Jr.");
         System.out.println("======================================");
 
         System.out.println("\nWelcome to Employee Management!");
-        System.out.println("This program displays employee and department information.");
+        System.out.println("This program manages employee information.");
         System.out.println("Select an option from the menu below.");
 
-        // Demonstrates a parameterized constructor.
+        // Creates the SQLite database tables.
+        DatabaseManager database = new DatabaseManager();
+        database.createTables();
+
+        // Constructor and composition demonstration.
         Department department = new Department(
                 101, "Information Technology");
 
-        // Demonstrates inherited constructors and initialization.
+        // Demonstrates inheritance and constructors.
         HourlyEmployee employee1 = new HourlyEmployee(
                 1001, "Dennis", "Franks Jr.", 25.00, 40.0);
 
@@ -42,24 +48,24 @@ public class Main {
         HourlyEmployee employee3 = new HourlyEmployee(
                 1003, "Jane", "Doe");
 
-        // Access specifiers: Public setter methods provide
-        // controlled access to private employee fields.
+        // Access specifiers: Setters modify private fields.
         employee3.setHourlyRate(22.00);
         employee3.setHoursWorked(30.0);
 
-        // Composition: Employees contain a Department object.
+        // Composition: Employees reference a Department.
         employee1.setDepartment(department);
         employee2.setDepartment(department);
         employee3.setDepartment(department);
 
-        // Abstraction and polymorphism:
-        // Employee is abstract, so objects are created from
-        // HourlyEmployee and referenced through Employee.
-        Employee[] employees = {employee1, employee2, employee3};
+        // Abstraction and polymorphism.
+        Employee[] employees = {
+                employee1, employee2, employee3
+        };
 
-        // Interface polymorphism:
-        // Payable references can call calculatePay().
-        Payable[] payableEmployees = {employee1, employee2, employee3};
+        // Interface polymorphism.
+        Payable[] payableEmployees = {
+                employee1, employee2, employee3
+        };
 
         int choice = 0;
 
@@ -68,20 +74,30 @@ public class Main {
             System.out.println("1. Display Employee Information");
             System.out.println("2. Display Department Information");
             System.out.println("3. Display Employee Pay");
-            System.out.println("4. Exit");
+            System.out.println("4. Add Department to Database");
+            System.out.println("5. Add Employee to Database");
+            System.out.println("6. Display Database Employees");
+            System.out.println("7. Search Employees by Type");
+            System.out.println("8. Update Employee Pay Information");
+            System.out.println("9. Delete Employee");
+            System.out.println("10. Exit");
             System.out.print("Enter your choice: ");
 
             if (!input.hasNextInt()) {
-                System.out.println("Invalid input. Please enter a number.");
+                System.out.println(
+                        "Invalid input. Please enter a number.");
                 input.nextLine();
                 continue;
             }
 
             choice = input.nextInt();
+            input.nextLine();
 
             switch (choice) {
+
                 case 1:
-                    System.out.println("\n***** Employee Information *****");
+                    System.out.println(
+                            "\n***** Employee Information *****");
 
                     // Polymorphism calls the subclass toString().
                     for (Employee employee : employees) {
@@ -91,33 +107,140 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.println("\n***** Department Information *****");
+                    System.out.println(
+                            "\n***** Department Information *****");
                     System.out.println(department);
                     break;
 
                 case 3:
-                    System.out.println("\n***** Employee Pay *****");
+                    System.out.println(
+                            "\n***** Employee Pay *****");
 
-                    // Interface references calculate each employee's pay.
-                    for (int i = 0; i < payableEmployees.length; i++) {
+                    // Interface references calculate employee pay.
+                    for (int i = 0;
+                         i < payableEmployees.length; i++) {
+
                         System.out.println("Employee ID: "
                                 + employees[i].getEmployeeId());
+
                         System.out.printf("Total Pay: $%.2f%n",
                                 payableEmployees[i].calculatePay());
+
                         System.out.println();
                     }
                     break;
 
                 case 4:
-                    System.out.println("\nThank you for using Employee Management!");
+                    // CREATE: Add a department to SQLite.
+                    System.out.print("Enter Department ID: ");
+                    int departmentId = input.nextInt();
+                    input.nextLine();
+
+                    System.out.print("Enter Department Name: ");
+                    String departmentName = input.nextLine();
+
+                    Department newDepartment = new Department(
+                            departmentId, departmentName);
+
+                    database.addDepartment(newDepartment);
+                    break;
+
+                case 5:
+                    // CREATE: Add an employee to SQLite.
+                    System.out.print("Enter Employee ID: ");
+                    int employeeId = input.nextInt();
+                    input.nextLine();
+
+                    System.out.print("Enter First Name: ");
+                    String firstName = input.nextLine();
+
+                    System.out.print("Enter Last Name: ");
+                    String lastName = input.nextLine();
+
+                    System.out.print("Enter Hourly Rate: ");
+                    double hourlyRate = input.nextDouble();
+
+                    System.out.print("Enter Hours Worked: ");
+                    double hoursWorked = input.nextDouble();
+                    input.nextLine();
+
+                    System.out.print("Enter Department ID: ");
+                    int employeeDepartmentId = input.nextInt();
+                    input.nextLine();
+
+                    HourlyEmployee newEmployee =
+                            new HourlyEmployee(
+                                    employeeId,
+                                    firstName,
+                                    lastName,
+                                    hourlyRate,
+                                    hoursWorked);
+
+                    if (employeeDepartmentId != 0) {
+                        // The department must already exist
+                        // in the SQLite database.
+                        newEmployee.setDepartment(
+                                new Department(
+                                        employeeDepartmentId,
+                                        "Assigned Department"));
+                    }
+
+                    database.addEmployee(newEmployee);
+                    break;
+
+                case 6:
+                    // READ: Display saved database employees.
+                    System.out.println(
+                            "\n***** Database Employees *****");
+                    database.displayEmployees();
+                    break;
+
+                case 7:
+                    // READ: Filter database employees by type.
+                    System.out.print("Enter Employee Type: ");
+                    String employeeType = input.nextLine();
+
+                    database.displayEmployeesByType(employeeType);
+                    break;
+
+                case 8:
+                    // UPDATE: Change employee pay information.
+                    System.out.print("Enter Employee ID: ");
+                    int updateId = input.nextInt();
+
+                    System.out.print("Enter New Hourly Rate: ");
+                    double newRate = input.nextDouble();
+
+                    System.out.print("Enter New Hours Worked: ");
+                    double newHours = input.nextDouble();
+                    input.nextLine();
+
+                    database.updateEmployee(
+                            updateId, newRate, newHours);
+                    break;
+
+                case 9:
+                    // DELETE: Remove an employee from SQLite.
+                    System.out.print(
+                            "Enter Employee ID to Delete: ");
+                    int deleteId = input.nextInt();
+                    input.nextLine();
+
+                    database.deleteEmployee(deleteId);
+                    break;
+
+                case 10:
+                    System.out.println(
+                            "\nThank you for using Employee Management!");
                     System.out.println("Goodbye!");
                     break;
 
                 default:
-                    System.out.println("Invalid choice. Please select 1-4.");
+                    System.out.println(
+                            "Invalid choice. Please select 1-10.");
             }
 
-        } while (choice != 4);
+        } while (choice != 10);
 
         input.close();
     }
