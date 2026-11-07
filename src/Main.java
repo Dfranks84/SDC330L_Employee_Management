@@ -1,9 +1,9 @@
 
 /************************************************************
  * Name: Dennis Franks Jr.
- * Date: October 31, 2026
- * Assignment: SDC330L Week 4 Project
- * Database Interactions
+ * Date: November 7, 2026
+ * Assignment: SDC330L Week 5 Final Project
+ * Application Delivery
  *
  * Description: Employee Management Application using
  * abstraction, inheritance, composition, constructors,
@@ -19,8 +19,8 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         System.out.println("======================================");
-        System.out.println("SDC330L - WEEK 4 PROJECT");
-        System.out.println("Database Interactions");
+        System.out.println("EMPLOYEE MANAGEMENT FINAL PROJECT");
+        System.out.println("Application Delivery");
         System.out.println("Employee Management Application");
         System.out.println("Created by: Dennis Franks Jr.");
         System.out.println("======================================");
@@ -146,45 +146,53 @@ public class Main {
                     break;
 
                 case 5:
-                    // CREATE: Add an employee to SQLite.
+                    // CREATE: Add one of three employee types.
                     System.out.print("Enter Employee ID: ");
                     int employeeId = input.nextInt();
                     input.nextLine();
-
                     System.out.print("Enter First Name: ");
                     String firstName = input.nextLine();
-
                     System.out.print("Enter Last Name: ");
                     String lastName = input.nextLine();
-
-                    System.out.print("Enter Hourly Rate: ");
-                    double hourlyRate = input.nextDouble();
-
-                    System.out.print("Enter Hours Worked: ");
-                    double hoursWorked = input.nextDouble();
+                    System.out.print("Employee Type (1 Hourly, 2 Salaried, 3 Commission): ");
+                    int typeChoice = input.nextInt();
                     input.nextLine();
 
-                    System.out.print("Enter Department ID: ");
-                    int employeeDepartmentId = input.nextInt();
-                    input.nextLine();
-
-                    HourlyEmployee newEmployee =
-                            new HourlyEmployee(
-                                    employeeId,
-                                    firstName,
-                                    lastName,
-                                    hourlyRate,
-                                    hoursWorked);
-
-                    if (employeeDepartmentId != 0) {
-                        // The department must already exist
-                        // in the SQLite database.
-                        newEmployee.setDepartment(
-                                new Department(
-                                        employeeDepartmentId,
-                                        "Assigned Department"));
+                    Employee newEmployee;
+                    if (typeChoice == 1) {
+                        System.out.print("Enter Hourly Rate: ");
+                        double hourlyRate = input.nextDouble();
+                        System.out.print("Enter Hours Worked: ");
+                        double hoursWorked = input.nextDouble();
+                        input.nextLine();
+                        newEmployee = new HourlyEmployee(employeeId,
+                                firstName, lastName, hourlyRate, hoursWorked);
+                    } else if (typeChoice == 2) {
+                        System.out.print("Enter Salary: ");
+                        double salary = input.nextDouble();
+                        input.nextLine();
+                        newEmployee = new SalariedEmployee(employeeId,
+                                firstName, lastName, salary);
+                    } else if (typeChoice == 3) {
+                        System.out.print("Enter Sales Amount: ");
+                        double sales = input.nextDouble();
+                        System.out.print("Enter Commission Rate (e.g. 0.10): ");
+                        double commissionRate = input.nextDouble();
+                        input.nextLine();
+                        newEmployee = new CommissionEmployee(employeeId,
+                                firstName, lastName, sales, commissionRate);
+                    } else {
+                        System.out.println("Invalid employee type.");
+                        break;
                     }
 
+                    System.out.print("Enter Department ID (0 for none): ");
+                    int employeeDepartmentId = input.nextInt();
+                    input.nextLine();
+                    if (employeeDepartmentId != 0) {
+                        newEmployee.setDepartment(new Department(
+                                employeeDepartmentId, "Assigned Department"));
+                    }
                     database.addEmployee(newEmployee);
                     break;
 
@@ -204,19 +212,38 @@ public class Main {
                     break;
 
                 case 8:
-                    // UPDATE: Change employee pay information.
+                    // UPDATE: Change employee name and type-specific pay.
                     System.out.print("Enter Employee ID: ");
                     int updateId = input.nextInt();
-
-                    System.out.print("Enter New Hourly Rate: ");
-                    double newRate = input.nextDouble();
-
-                    System.out.print("Enter New Hours Worked: ");
-                    double newHours = input.nextDouble();
                     input.nextLine();
-
-                    database.updateEmployee(
-                            updateId, newRate, newHours);
+                    String currentType = database.getEmployeeType(updateId);
+                    if (currentType == null) {
+                        System.out.println("Employee not found.");
+                        break;
+                    }
+                    System.out.print("Enter New First Name: ");
+                    String newFirst = input.nextLine();
+                    System.out.print("Enter New Last Name: ");
+                    String newLast = input.nextLine();
+                    double firstValue;
+                    double secondValue = 0;
+                    if ("Hourly".equalsIgnoreCase(currentType)) {
+                        System.out.print("Enter New Hourly Rate: ");
+                        firstValue = input.nextDouble();
+                        System.out.print("Enter New Hours Worked: ");
+                        secondValue = input.nextDouble();
+                    } else if ("Salaried".equalsIgnoreCase(currentType)) {
+                        System.out.print("Enter New Salary: ");
+                        firstValue = input.nextDouble();
+                    } else {
+                        System.out.print("Enter New Sales Amount: ");
+                        firstValue = input.nextDouble();
+                        System.out.print("Enter New Commission Rate (e.g. 0.10): ");
+                        secondValue = input.nextDouble();
+                    }
+                    input.nextLine();
+                    database.updateEmployee(updateId, newFirst, newLast,
+                            firstValue, secondValue);
                     break;
 
                 case 9:
